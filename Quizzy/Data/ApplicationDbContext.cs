@@ -47,6 +47,14 @@ public class ApplicationDbContext : IdentityDbContext<UserEntity, RoleEntity, in
             new Grade { GradeId = 6, Number = 10 },
             new Grade { GradeId = 7, Number = 11 }
         );
+        
+        // var roleNames = new List<string> { "admin", "student", "teacher" };
+        //
+        // // foreach (var roleName in roleNames)
+        // // {
+        // //     modelBuilder.Entity<Roles>
+        // // }
+        
 
         var createdDate = new DateTime(2024, 6, 13, 0, 0, 0, DateTimeKind.Utc);
         createdDate = DateTime.UtcNow;

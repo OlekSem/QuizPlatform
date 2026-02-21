@@ -725,9 +725,16 @@ public class TestsController(UserManager<UserEntity> userManager,
     [HttpPost("Tests/AssignHomework/{id}")]
     public async Task<IActionResult> AssignHomework(AssignHomeworkViewModel model, int id)
     {
-        if (!ModelState.IsValid)
+        Console.WriteLine("assigning homework...");
+        Console.WriteLine($"ASSIGN HIT with id={id}");
+        // model.TestId = id;
+        model.TestName = await _db.Tests
+            .Where(t => t.TestId == id)
+            .Select(t => t.Name)
+            .FirstOrDefaultAsync();
+        if (id == null || model.TestName == null)
         {
-            model.TestId = id;
+            Console.WriteLine("model state is not valid");
             return View("CreateHomework", model);
         }
 
@@ -754,7 +761,7 @@ public class TestsController(UserManager<UserEntity> userManager,
             HasTimeToComplete = false,
             TimeToComplete = null
         };
-
+        Console.WriteLine("the next line assigns the homework");
         _db.TestHomeworks.Add(homework);
         await _db.SaveChangesAsync();
         return RedirectToAction("Index", "Home"); 

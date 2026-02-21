@@ -12,8 +12,8 @@ using Quizzy.Data;
 namespace Quizzy.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250617172245_fifth")]
-    partial class fifth
+    [Migration("20260221070219_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -143,26 +143,16 @@ namespace Quizzy.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("AnswerId"));
 
-                    b.Property<bool>("HasPhoto")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("HasText")
-                        .HasColumnType("boolean");
-
                     b.Property<bool>("IsCorrect")
                         .HasColumnType("boolean");
-
-                    b.Property<int>("Order")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("PhotoPath")
-                        .HasColumnType("text");
 
                     b.Property<int>("QuestionId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Text")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
 
                     b.HasKey("AnswerId");
 
@@ -354,34 +344,23 @@ namespace Quizzy.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("QuestionId"));
 
-                    b.Property<int>("GradeId")
+                    b.Property<int?>("GradeId")
                         .HasColumnType("integer");
 
                     b.Property<bool>("HasMultipleCorrect")
                         .HasColumnType("boolean");
 
-                    b.Property<bool>("HasPhoto")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("HasText")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("Order")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("PhotoPath")
-                        .HasColumnType("text");
-
                     b.Property<int>("Points")
                         .HasColumnType("integer");
 
-                    b.Property<int>("SubjectId")
+                    b.Property<int?>("SubjectId")
                         .HasColumnType("integer");
 
                     b.Property<int>("TestId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Text")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("QuestionId");
@@ -415,9 +394,13 @@ namespace Quizzy.Migrations
                     b.Property<TimeSpan>("TimeSpent")
                         .HasColumnType("interval");
 
+                    b.Property<int>("TotalPoints")
+                        .HasColumnType("integer");
+
                     b.HasKey("ResultId");
 
-                    b.HasIndex("TestSessionId");
+                    b.HasIndex("TestSessionId")
+                        .IsUnique();
 
                     b.ToTable("Results");
                 });
@@ -598,6 +581,10 @@ namespace Quizzy.Migrations
                     b.Property<bool>("IsTestHomework")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("StartedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -711,17 +698,13 @@ namespace Quizzy.Migrations
 
             modelBuilder.Entity("Quizzy.Data.Entities.Question", b =>
                 {
-                    b.HasOne("Quizzy.Data.Entities.Grade", "Grade")
+                    b.HasOne("Quizzy.Data.Entities.Grade", null)
                         .WithMany("Questions")
-                        .HasForeignKey("GradeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("GradeId");
 
-                    b.HasOne("Quizzy.Data.Entities.Subject", "Subject")
+                    b.HasOne("Quizzy.Data.Entities.Subject", null)
                         .WithMany("Questions")
-                        .HasForeignKey("SubjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SubjectId");
 
                     b.HasOne("Quizzy.Data.Entities.Test", "Test")
                         .WithMany("Questions")
@@ -729,18 +712,14 @@ namespace Quizzy.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Grade");
-
-                    b.Navigation("Subject");
-
                     b.Navigation("Test");
                 });
 
             modelBuilder.Entity("Quizzy.Data.Entities.Result", b =>
                 {
                     b.HasOne("Quizzy.Data.Entities.TestSession", "TestSession")
-                        .WithMany()
-                        .HasForeignKey("TestSessionId")
+                        .WithOne("Result")
+                        .HasForeignKey("Quizzy.Data.Entities.Result", "TestSessionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -901,6 +880,8 @@ namespace Quizzy.Migrations
 
             modelBuilder.Entity("Quizzy.Data.Entities.TestSession", b =>
                 {
+                    b.Navigation("Result");
+
                     b.Navigation("UserAnswers");
                 });
 #pragma warning restore 612, 618

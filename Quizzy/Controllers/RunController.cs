@@ -157,35 +157,51 @@ public class RunController(
 
         // Спроба знайти вже існуючу незавершену сесію
         var userId = int.Parse(userManager.GetUserId(User));
-        var existingSession = await _db.TestSessions
-            .FirstOrDefaultAsync(s =>
-                s.TestId == testId &&
-                s.UserId == userId &&
-                !s.IsFinished);
+        // var existingSession = await _db.TestSessions
+        //     .FirstOrDefaultAsync(s =>
+        //         s.TestId == testId &&
+        //         s.UserId == userId &&
+        //         !s.IsFinished);
 
+       
         int sessionId;
 
-        if (existingSession != null)
+        // if (existingSession != null)
+        // {
+        //     sessionId = existingSession.TestSessionId;
+        // }
+        // else
+        // {
+        //     var session = new TestSession
+        //     {
+        //         UserId = userId,
+        //         Name = name,
+        //         IsTestHomework = false,
+        //         TestId = testId,
+        //         StartedAt = DateTime.UtcNow,
+        //         IsFinished = false,
+        //         Result = null
+        //     };
+        //
+        //     await _db.TestSessions.AddAsync(session);
+        //     await _db.SaveChangesAsync();
+        //     sessionId = session.TestSessionId;
+        // }
+        
+        var session = new TestSession
         {
-            sessionId = existingSession.TestSessionId;
-        }
-        else
-        {
-            var session = new TestSession
-            {
-                UserId = userId,
-                Name = name,
-                IsTestHomework = false,
-                TestId = testId,
-                StartedAt = DateTime.UtcNow,
-                IsFinished = false,
-                Result = null
-            };
-
-            await _db.TestSessions.AddAsync(session);
-            await _db.SaveChangesAsync();
-            sessionId = session.TestSessionId;
-        }
+            UserId = userId,
+            Name = name,
+            IsTestHomework = false,
+            TestId = testId,
+            StartedAt = DateTime.UtcNow,
+            IsFinished = false,
+            Result = null
+        };
+        
+        await _db.TestSessions.AddAsync(session);
+        await _db.SaveChangesAsync();
+        sessionId = session.TestSessionId;
 
         RunTestViewModel model = new RunTestViewModel
         {

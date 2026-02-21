@@ -227,7 +227,8 @@ namespace Quizzy.Migrations
                     GradeId = table.Column<int>(type: "integer", nullable: false),
                     IsPrivate = table.Column<bool>(type: "boolean", nullable: false),
                     IsCopyable = table.Column<bool>(type: "boolean", nullable: false),
-                    QuestionsQuantity = table.Column<int>(type: "integer", nullable: false)
+                    QuestionsQuantity = table.Column<int>(type: "integer", nullable: false),
+                    IsPublished = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -258,16 +259,12 @@ namespace Quizzy.Migrations
                 {
                     QuestionId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    HasText = table.Column<bool>(type: "boolean", nullable: false),
-                    Text = table.Column<string>(type: "text", nullable: true),
+                    Text = table.Column<string>(type: "text", nullable: false),
                     HasMultipleCorrect = table.Column<bool>(type: "boolean", nullable: false),
                     TestId = table.Column<int>(type: "integer", nullable: false),
-                    SubjectId = table.Column<int>(type: "integer", nullable: false),
-                    GradeId = table.Column<int>(type: "integer", nullable: false),
-                    HasPhoto = table.Column<bool>(type: "boolean", nullable: false),
-                    PhotoPath = table.Column<string>(type: "text", nullable: true),
                     Points = table.Column<int>(type: "integer", nullable: false),
-                    Order = table.Column<int>(type: "integer", nullable: false)
+                    GradeId = table.Column<int>(type: "integer", nullable: true),
+                    SubjectId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -276,14 +273,12 @@ namespace Quizzy.Migrations
                         name: "FK_Questions_Grades_GradeId",
                         column: x => x.GradeId,
                         principalTable: "Grades",
-                        principalColumn: "GradeId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "GradeId");
                     table.ForeignKey(
                         name: "FK_Questions_Subjects_SubjectId",
                         column: x => x.SubjectId,
                         principalTable: "Subjects",
-                        principalColumn: "SubjectId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "SubjectId");
                     table.ForeignKey(
                         name: "FK_Questions_Tests_TestId",
                         column: x => x.TestId,
@@ -330,12 +325,8 @@ namespace Quizzy.Migrations
                     AnswerId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     QuestionId = table.Column<int>(type: "integer", nullable: false),
-                    Text = table.Column<string>(type: "text", nullable: true),
-                    IsCorrect = table.Column<bool>(type: "boolean", nullable: false),
-                    HasText = table.Column<bool>(type: "boolean", nullable: false),
-                    HasPhoto = table.Column<bool>(type: "boolean", nullable: false),
-                    PhotoPath = table.Column<string>(type: "text", nullable: true),
-                    Order = table.Column<int>(type: "integer", nullable: false)
+                    Text = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false),
+                    IsCorrect = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -355,6 +346,7 @@ namespace Quizzy.Migrations
                     TestSessionId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     UserId = table.Column<int>(type: "integer", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
                     IsTestHomework = table.Column<bool>(type: "boolean", nullable: false),
                     TestId = table.Column<int>(type: "integer", nullable: true),
                     TestHomeworkId = table.Column<int>(type: "integer", nullable: true),
@@ -391,6 +383,7 @@ namespace Quizzy.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     TestSessionId = table.Column<int>(type: "integer", nullable: false),
                     Points = table.Column<int>(type: "integer", nullable: false),
+                    TotalPoints = table.Column<int>(type: "integer", nullable: false),
                     TimeSpent = table.Column<TimeSpan>(type: "interval", nullable: false),
                     TimePerQuestion = table.Column<TimeSpan>(type: "interval", nullable: false)
                 },
@@ -524,7 +517,8 @@ namespace Quizzy.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Results_TestSessionId",
                 table: "Results",
-                column: "TestSessionId");
+                column: "TestSessionId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_TestHomeworks_CreatedById",

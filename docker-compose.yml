@@ -1,0 +1,37 @@
+version: "3.9"
+
+networks:
+  transferNet:
+    driver: bridge
+
+services:
+  postgresServerDb:
+    image: postgres:18.1
+    container_name: postgres_db_quizzy
+    restart: always
+    ports:
+      - "4444:5432"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ${VOLUME_POSTGRES}
+    networks:
+      - transferNet
+    
+  api:
+    #build: ./WebApiTransfer
+    image: utereskovi/quizzy:latest
+    container_name: quizzy
+    volumes:
+      - /data/quizzy/images:/app/images
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__DefaultConnection: Host=postgresServerDb;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+    ports:
+      - "4445:8080"
+    depends_on:
+      - postgresServerDb
+    networks:
+      - transferNet
