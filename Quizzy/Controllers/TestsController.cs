@@ -19,26 +19,25 @@ public class TestsController(UserManager<UserEntity> userManager,
     public IActionResult ResultsOfTests(int id)
     {
         var results = _db.Results
-        .Include(r => r.TestSession)
+            .Include(r => r.TestSession)
             .ThenInclude(ts => ts.UserEntity)
-        .Where(r => r.TestSession.TestId == id && !r.TestSession.IsTestHomework) // ? ������ ������
-        .Select(r => new ResultCardViewModel
-        {
-            ResultId = r.ResultId,
-            UserId = r.TestSession.UserEntity.Id,
-            TestId = r.TestSession.TestId ?? 0,
-            FullName = r.TestSession.UserEntity.FirstName + " " + r.TestSession.UserEntity.LastName,
-            Points = r.Points,
-            TotalPoints = r.TotalPoints,
-            TimeSpent = r.TimeSpent,
-            TimePerQuestion = r.TimePerQuestion
-        })
-        .ToList();
+            .Where(r => r.TestSession.TestId == id && !r.TestSession.IsTestHomework)
+            .Select(r => new ResultCardViewModel
+            {
+                ResultId = r.ResultId,
+                UserId = r.TestSession.UserId ?? 0, // fallback to 0 if guest
+                TestId = r.TestSession.TestId ?? 0,
+                FullName = r.TestSession.Name,
+                Points = r.Points,
+                TotalPoints = r.TotalPoints,
+                TimeSpent = r.TimeSpent,
+                TimePerQuestion = r.TimePerQuestion
+            })
+            .ToList();
 
         return View(results);
 
 
-        return View(results);
     }
 
     public IActionResult ResultCard(int resultId)
@@ -98,9 +97,9 @@ public class TestsController(UserManager<UserEntity> userManager,
             .Select(r => new ResultCardViewModel
             {
                 ResultId = r.ResultId,
-                UserId = r.TestSession.UserEntity.Id,
+                UserId = r.TestSession.UserId ?? null,
                 TestId = r.TestSession.TestId ?? 0,
-                FullName = r.TestSession.UserEntity.FirstName + " " + r.TestSession.UserEntity.LastName,
+                FullName = r.TestSession.Name,
                 Points = r.Points,
                 TotalPoints = r.TotalPoints,
                 TimeSpent = r.TimeSpent,
@@ -112,8 +111,8 @@ public class TestsController(UserManager<UserEntity> userManager,
 
         return View(homeworks);
     }
-
-    public async Task<IActionResult> PreviewHW(int id)  // ��� int TestHomeworkId
+    [Authorize]
+    public async Task<IActionResult> PreviewHW(int id)
     {
         var homework = await _db.TestHomeworks
             .Include(hw => hw.Test)
@@ -128,14 +127,14 @@ public class TestsController(UserManager<UserEntity> userManager,
 
         var results = await _db.Results
             .Include(r => r.TestSession)
-                .ThenInclude(ts => ts.UserEntity)
-            .Where(r => r.TestSession.TestId == homework.TestId)
+            .ThenInclude(ts => ts.UserEntity)
+            .Where(r => r.TestSession != null && r.TestSession.TestId == homework.TestId)
             .Select(r => new ResultCardViewModel
             {
                 ResultId = r.ResultId,
-                UserId = r.TestSession.UserEntity.Id,
+                UserId = r.TestSession.UserId ?? 0, // nullable UserId fallback
                 TestId = r.TestSession.TestId ?? 0,
-                FullName = r.TestSession.UserEntity.FirstName + " " + r.TestSession.UserEntity.LastName,
+                FullName = r.TestSession.Name,
                 Points = r.Points,
                 TotalPoints = r.TotalPoints,
                 TimeSpent = r.TimeSpent,

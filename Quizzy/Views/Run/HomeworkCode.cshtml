@@ -21,18 +21,22 @@
         </div>
         <div class="form">
             <form asp-controller="Run" asp-action="HomeworkCode" method="post">
-                @if (Model.FullView)
-                {
-                    <div>
-                        <label asp-for="HomeworkCode">Code (required)</label>
-                        <input type="number" asp-for="HomeworkCode" required>
-                    </div>
-                }
-                else
-                {
-                    <!-- приховано передаємо код -->
-                    <input type="hidden" asp-for="HomeworkCode" value="@Model.HomeworkCode" />
-                }
+                <div id="hideMe">
+                    @if (Model.FullView)
+                    {
+                        <div>
+                            <label asp-for="HomeworkCode">Code (required)</label>
+                            <input type="number" asp-for="HomeworkCode" required>
+                        </div>
+                    }
+                    else
+                    {
+                        <!-- приховано передаємо код -->
+                        <input type="hidden" asp-for="HomeworkCode" value="@Model.HomeworkCode"/>
+                    }
+                </div>
+                
+                
 
                 <div>
                     <label asp-for="Username">Name (required)</label>
@@ -55,11 +59,33 @@
 
  
     
-</body>
-<script>
-    const hwcode = "@Model.Code";
+</body><script>
+    // Get the query string parameters
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
 
-    // Очищення збережених даних
+    // Get the 'code' parameter from the URL
+    const code = urlParams.get('code');   // e.g. "1"
+
+    // Debug output
+    console.log("code:", code);
+
+    // If 'code' exists in the URL, pre-fill the input and optionally hide the full input
+    if (code) {
+        const hideMe = document.getElementById("hideMe");
+        if (hideMe) {
+            hideMe.style.display = "none"; // hide the input field
+        }
+
+        const codeInputs = document.querySelectorAll('input[name="HomeworkCode"]');
+        codeInputs.forEach(input => {
+            input.value = code; // set value from URL
+        });
+    }
+    
+
+    // Clear previous stored data for this homework code
+    const hwcode = "@Model.Code";
     ["currentIndex_", "timerRemaining_"].forEach(key => {
         localStorage.removeItem(key + hwcode);
     });

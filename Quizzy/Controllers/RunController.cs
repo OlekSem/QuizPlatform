@@ -156,37 +156,12 @@ public class RunController(
             return NotFound("Test not found.");
 
         // Спроба знайти вже існуючу незавершену сесію
-        var userId = int.Parse(userManager.GetUserId(User));
-        // var existingSession = await _db.TestSessions
-        //     .FirstOrDefaultAsync(s =>
-        //         s.TestId == testId &&
-        //         s.UserId == userId &&
-        //         !s.IsFinished);
-
+        int? userId = null;
+        if (User.Identity?.IsAuthenticated == true)
+            userId = int.Parse(userManager.GetUserId(User));
        
         int sessionId;
-
-        // if (existingSession != null)
-        // {
-        //     sessionId = existingSession.TestSessionId;
-        // }
-        // else
-        // {
-        //     var session = new TestSession
-        //     {
-        //         UserId = userId,
-        //         Name = name,
-        //         IsTestHomework = false,
-        //         TestId = testId,
-        //         StartedAt = DateTime.UtcNow,
-        //         IsFinished = false,
-        //         Result = null
-        //     };
-        //
-        //     await _db.TestSessions.AddAsync(session);
-        //     await _db.SaveChangesAsync();
-        //     sessionId = session.TestSessionId;
-        // }
+        
         
         var session = new TestSession
         {
@@ -216,68 +191,73 @@ public class RunController(
 
 
     [HttpPost]
-    public async Task<IActionResult> HomeworkCode(RunHomeworkTestViewModel model)
+public async Task<IActionResult> HomeworkCode(RunHomeworkTestViewModel model)
+{
+    if (!int.TryParse(model.HomeworkCode, out int testHwId))
+        return BadRequest("Invalid hw code format.");
+
+    var hw = await _db.TestHomeworks.FirstOrDefaultAsync(t => t.TestHomeworkId == testHwId);
+    if (hw == null) return NotFound("Test homework not found.");
+    if(hw.Deadline < DateTime.UtcNow)
+        return NotFound("Deadline has expired.");
+
+    var test = await _db.Tests
+        .Include(e => e.Questions)
+        .ThenInclude(a => a.Answers)
+        .FirstOrDefaultAsync(t => t.TestId == hw.TestId);
+    if (test == null) return NotFound("Test not found.");
+
+    string? userId = null;
+    if (User.Identity?.IsAuthenticated == true)
+        userId = userManager.GetUserId(User);
+
+    TestSession? existingSession = null;
+    if (userId != null)
     {
-        if (!int.TryParse(model.HomeworkCode, out int testHwId))
-            return BadRequest("Invalid hw code format.");
-
-        var hw = await _db.TestHomeworks.FirstOrDefaultAsync(t => t.TestHomeworkId == testHwId);
-        if (hw == null) return NotFound("Test homework not found.");
-        if(hw.Deadline < DateTime.UtcNow)
-            return NotFound("Deadline has expired.");
-        var test = await _db.Tests
-            .Include(e => e.Questions)
-            .ThenInclude(a => a.Answers)
-            .FirstOrDefaultAsync(t => t.TestId == hw.TestId);
-        if (test == null) return NotFound("Test not found.");
-
-        var userId = int.Parse(userManager.GetUserId(User));
-        var existingSession = await _db.TestSessions
-            .FirstOrDefaultAsync(s => s.TestId == test.TestId && s.UserId == userId && !s.IsFinished);
-
-        int sessionId;
-        DateTime startTime;
-
-        if (existingSession != null)
-        {
-            // Якщо сесія активна — продовжуємо з тим самим часом
-            sessionId = existingSession.TestSessionId;
-            startTime = existingSession.StartedAt;
-        }
-        else
-        {
-            // Якщо сесія завершена або не існує — створюємо нову
-            var session = new TestSession
-            {
-                UserId = userId,
-                Name = model.Username,
-                IsTestHomework = true,
-                TestHomeworkId = hw.TestHomeworkId,
-                TestId = test.TestId,
-                StartedAt = DateTime.UtcNow,
-                IsFinished = false,
-                Result = null
-            };
-
-            await _db.TestSessions.AddAsync(session);
-            await _db.SaveChangesAsync();
-
-            sessionId = session.TestSessionId;
-            startTime = session.StartedAt;
-        }
-
-        var vm = new RunHomeworkTestViewModel
-        {
-            Questions = test.Questions.ToList(),
-            Code = test.TestId.ToString(),
-            HomeworkCode = hw.TestHomeworkId.ToString(),
-            IsSuccessful = true,
-            SessionId = sessionId,
-        };
-            
-
-        return View("HomeworkRun", vm);
+        existingSession = await _db.TestSessions
+            .FirstOrDefaultAsync(s => s.TestId == test.TestId && s.UserId == int.Parse(userId) && !s.IsFinished);
     }
+
+    int sessionId;
+    DateTime startTime;
+
+    if (existingSession != null)
+    {
+        sessionId = existingSession.TestSessionId;
+        startTime = existingSession.StartedAt;
+    }
+    else
+    {
+        var session = new TestSession
+        {
+            UserId = userId != null ? int.Parse(userId) : null,
+            Name = string.IsNullOrEmpty(model.Username) ? "Guest" : model.Username,
+            IsTestHomework = true,
+            TestHomeworkId = hw.TestHomeworkId,
+            TestId = test.TestId,
+            StartedAt = DateTime.UtcNow,
+            IsFinished = false,
+            Result = null
+        };
+
+        await _db.TestSessions.AddAsync(session);
+        await _db.SaveChangesAsync();
+
+        sessionId = session.TestSessionId;
+        startTime = session.StartedAt;
+    }
+
+    var vm = new RunHomeworkTestViewModel
+    {
+        Questions = test.Questions.ToList(),
+        Code = test.TestId.ToString(),
+        HomeworkCode = hw.TestHomeworkId.ToString(),
+        IsSuccessful = true,
+        SessionId = sessionId,
+    };
+
+    return View("HomeworkRun", vm);
+}
 
 
     [HttpPost]
