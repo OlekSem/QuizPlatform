@@ -73,6 +73,10 @@ public class TestsController(UserManager<UserEntity> userManager,
             return Unauthorized();
 
         var homeworks = await _db.TestHomeworks
+            .Where(hw => 
+                (hw.HasDeadline && hw.Deadline > DateTime.UtcNow) 
+                || !hw.HasDeadline
+            )
     .Include(hw => hw.Test)
         .ThenInclude(t => t.CreatedBy)
     .Include(hw => hw.CreatedBy)

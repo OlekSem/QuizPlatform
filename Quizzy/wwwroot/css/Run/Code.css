@@ -5,6 +5,8 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 0;
+    margin: 0;
 }
 .main{
     display: flex;
@@ -12,7 +14,7 @@ body{
     align-items: center;
     border-radius: 10px;
     background-color: #6c4dd9;
-
+    margin: 0 10px;
 }
 .Details{
     width: 50%;
@@ -156,4 +158,14 @@ form input[type="submit"]:hover{
         width: 100%;
     }
 
+}
+@media (max-width: 1050px) {
+    .main{
+        width: auto;
+    }
+}
+@media (max-width: 500px) {
+    .main{
+        margin: 0 20px;
+    }
 }

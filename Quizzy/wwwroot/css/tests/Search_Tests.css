@@ -20,11 +20,11 @@ body {
 .main{
     background: #fff7f7;
     width:100%;
-    height: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding-top: 50px;
+    min-height: calc(100vh*0.8);
 
 }
 
@@ -37,6 +37,7 @@ body {
     justify-content: space-around;
     height: auto;
     align-items: center;
+    padding: 20px 0;
 }
 
 
@@ -376,9 +377,30 @@ h2 {
     cursor: pointer;
 }
 
+
+
+.text-div{
+    width: 100%;
+    padding: 0 10px;
+}
+
 @media (max-width: 950px) {
     .model-content{
         width: 60%;
+    }
+    .first{
+        flex-direction: column;
+    }
+    #search{
+        margin: 0 10px;
+    }
+}
+@media (max-width: 800px) {
+    .first .forPhoto{
+        width: 100%;
+    }
+    .first .forPhoto img{
+        width: 200px;
     }
 }
 
@@ -391,3 +413,5 @@ h2 {
         align-items: center;
     }
 }
+
+
