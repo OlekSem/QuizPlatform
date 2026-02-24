@@ -9,8 +9,11 @@
 <div class="main">
     <div class="first">
         <section class="stats-section">
-            <h1>Online tests from QUIZZY</h1>
-            <p>Interactive tasks to test knowledge and engage students in learning</p>
+            <div class="text-div">
+                <h1 style="text-align: center">Online tests from QUIZZY</h1>
+                <p style="text-align: center">Interactive tasks to test knowledge and engage students in learning</p>
+            </div>
+           
 
             <div class="stats-grid">
                 <div class="stat-card">
@@ -23,8 +26,8 @@
                 </div>
             </div>
 
-            <form class="search-panel" method="get" asp-controller="Tests" asp-action="Search">
-                <input type="text" name="query" placeholder="Search query..." />
+            <form class="search-panel" method="get" asp-controller="Tests" asp-action="Search" id="search">
+                <input type="text" name="query" placeholder="Search query..."/>
 
                 <select name="subject">
                     <option value="">Choose an item...</option>

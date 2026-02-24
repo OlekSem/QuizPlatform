@@ -198,6 +198,7 @@ hr {
 /* ✅ RESPONSIVENESS */
 
 @media (max-width: 768px) {
+
     .question-header {
         flex-direction: column;
         align-items: flex-start;
@@ -205,10 +206,19 @@ hr {
 
     .actions {
         flex-direction: column;
-        align-items: stretch;
+        align-items: center;   /* important */
+        width: 100%;
     }
 
-    .btn {
+    .actions > * {
+        width: 80%;
+    }
+
+    .actions form {
+        margin: 0;
+    }
+
+    .actions form button {
         width: 100%;
     }
 }
@@ -216,6 +226,9 @@ hr {
 @media (max-width: 480px) {
     .title {
         font-size: 1.5rem;
+    }
+    .builder-container {
+        padding: 5px;
     }
 
     .question-card {
