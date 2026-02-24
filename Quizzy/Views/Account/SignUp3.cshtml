@@ -34,7 +34,7 @@
             <input asp-for="UsersVerificationCode" type="text" id="text" placeholder="Verification Code" required value="">
             <span asp-validation-for="UsersVerificationCode" class = "text-danger"></span>
             <div class="submit">
-                <a style="margin-right: 20px;"  asp-action="SignUp2">Not your email?<br>Click here!</a>
+                <a style="margin-right: 20px;" href="/Account/Login">Not your email?<br>Click here!</a>
                 <input type="submit" value="Sign Up">
             </div>
             @* @if (!string.IsNullOrEmpty(Model.Error)) *@

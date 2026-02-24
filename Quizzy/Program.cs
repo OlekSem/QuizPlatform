@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+using Quizzy.Constants;
 using Quizzy.Data;
 using Quizzy.Data.Entities;
 using Quizzy.Data.Entities.Identity;
@@ -54,27 +56,74 @@ public class Program
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}");
         
-        // using (var scope = app.Services.CreateScope())
-        // {
-        //     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        //     await SeedSampleTest(dbContext); 
-        // }
+        using (var scope = app.Services.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            dbContext.Database.Migrate();
+            
+            var roleManager = scope.ServiceProvider
+                .GetRequiredService<RoleManager<RoleEntity>>();
+
+            string[] roles = { "teacher", "student", "admin" };
+
+            foreach (var role in roles)
+            {
+                if (!await roleManager.RoleExistsAsync(role))
+                {
+                    await roleManager.CreateAsync(new RoleEntity
+                    {
+                        Name = role
+                    });
+                }
+            }
+            
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<UserEntity>>();
+            // ✅ TEST USER SEEDING
+            string teacherEmail = "tereshkovych_yurii@gymnasia21.lutsk.ua";
+
+            var existingUser = await userManager.FindByEmailAsync(teacherEmail);
+
+            if (existingUser == null)
+            {
+                var teacherUser = new UserEntity
+                {
+                    FirstName = "Yurii",
+                    LastName = "Tereshkovych",
+                    MiddleName = "D.",
+                    Image = "default.png",
+                    CreatedUtc = DateTime.UtcNow,
+                    UserName = teacherEmail,
+                    Email = teacherEmail,
+                    EmailConfirmed = true
+                };
+
+                var result = await userManager.CreateAsync(teacherUser, "123456");
+
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(teacherUser, "teacher");
+                }
+            }
+            await SeedSampleTest(dbContext); 
+        }
+        
+        
         app.Run();
     }
 
     
    public static async Task SeedSampleTest(ApplicationDbContext _db)
 {
-    if (_db.Tests.Any(t => t.Name == "Sample Test"))
+    if (_db.Tests.Any())
     {
-        _db.Tests.RemoveRange(_db.Tests);
+        return;
     }
 
     var test = new Test
     {
         Name = "Sample Test",
         Description = "A small test for demo purposes",
-        CreatedById = 5,  // ❗ Упевнись, що User з ID 5 існує
+        CreatedById = 1,  // ❗ Упевнись, що User з ID 1 існує
         CreatedUtc = DateTime.UtcNow,
         SubjectId = 1,    // ❗ Перевір, що Subject з ID 1 існує
         GradeId = 1,      // ❗ Перевір, що Grade з ID 1 існує

@@ -13,10 +13,15 @@
             {
                 <span class="draft-label alert">Draft</span>
             }
-
-            <h2>
-                <a asp-action="PreviewHW" asp-route-id="@hw.TestHomeworkId">@hw.TestName</a>
-            </h2>
+            <div style="display: flex; align-items: center; gap: 4px; justify-content: flex-start;">
+                <h2 style="padding: 0;margin: 0;">
+                    <a asp-action="PreviewHW" asp-route-id="@hw.TestHomeworkId">@hw.TestName</a>
+                </h2>
+                <h3 style="margin: 0; padding: 0;">
+                    (Link to the test - https://quizzy.itstep.click/Run/HomeworkCode?code=@hw.TestHomeworkId)
+                </h3>
+            </div>
+            
 
             <p><strong>Join Code:</strong> @hw.TestHomeworkId</p>
             <p><strong>Created By:</strong> @hw.HomeworkCreatedByFirstName @hw.HomeworkCreatedByLastName</p>

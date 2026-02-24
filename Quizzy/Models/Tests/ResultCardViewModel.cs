@@ -3,7 +3,7 @@
     public class ResultCardViewModel
     {
         public int ResultId { get; set; }
-        public int UserId { get; set; }        // Додано UserId
+        public int? UserId { get; set; }        // Додано UserId
         public int TestId { get; set; }        // Додано TestId
 
         public string FullName { get; set; }

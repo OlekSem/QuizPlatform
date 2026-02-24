@@ -259,17 +259,6 @@ public class AccountController(UserManager<UserEntity> userManager,
     [HttpPost]
     public async Task<IActionResult> SignUp4(RegisterViewModel model)
     {
-        // if (!ModelState.IsValid)
-        // {
-        //     foreach (var error in res.Errors)
-        //     {
-        //         if (error.Code.Contains("Password"))
-        //             ModelState.AddModelError(nameof(model.Password), error.Description);
-        //         else
-        //             ModelState.AddModelError(string.Empty, error.Description);
-        //     }
-        //     return View(model);
-        // }
         var user = mapper.Map<UserEntity>(model);
         user.Image = "default.png";
         user.CreatedUtc = DateTime.UtcNow;
@@ -278,8 +267,8 @@ public class AccountController(UserManager<UserEntity> userManager,
         if (res.Succeeded)
         {
             if (model.IsTeacher)
-                await userManager.AddToRoleAsync(user, "Teacher");
-            else await userManager.AddToRoleAsync(user, "Student");
+                await userManager.AddToRoleAsync(user, "teacher");
+            else await userManager.AddToRoleAsync(user, "student");
             await signInManager.SignInAsync(user, isPersistent: false);
             Console.WriteLine("creation of account successful!");
             return RedirectToAction("Index", "Home");

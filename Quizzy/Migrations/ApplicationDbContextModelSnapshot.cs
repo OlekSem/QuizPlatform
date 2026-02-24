@@ -591,7 +591,7 @@ namespace Quizzy.Migrations
                     b.Property<int?>("TestId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("TestSessionId");
@@ -781,9 +781,7 @@ namespace Quizzy.Migrations
 
                     b.HasOne("Quizzy.Data.Entities.Identity.UserEntity", "UserEntity")
                         .WithMany("TestSessions")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Test");
 
