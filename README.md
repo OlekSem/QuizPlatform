@@ -55,7 +55,7 @@ The system enables teachers to design and manage quizzes, while students can tak
 - Performance evaluation for each user  
 - Basic analytical insights into quiz outcomes  
 
-### 👥 User Authentication and Roles
+### User Authentication and Roles
 - Secure authentication system  
 - Role-based access:
   - **Students** – complete quizzes and view results  
