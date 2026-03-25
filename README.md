@@ -3,7 +3,7 @@
 ![Language](https://img.shields.io/badge/language-C%23-yellow) ![Framework](https://img.shields.io/badge/framework-ASP.NET-orange) 
 
 ---
-## 📋 Table of Contents
+## Table of Contents
 
 - [Project Information](#project-information)  
 - [Project Overview](#project-overview)  
@@ -18,10 +18,10 @@
 ---
 ## ℹ Project Information
 
-- **🌐 Live Demo:** [quizzy.itstep.click](https://quizzy.itstep.click)
-- **📂 Repository:** [github.com/OlekSem/QuizPlatform](https://github.com/OlekSem/QuizPlatform)
+- **Live Demo:** [quizzy.itstep.click](https://quizzy.itstep.click)
+- **Repository:** [github.com/OlekSem/QuizPlatform](https://github.com/OlekSem/QuizPlatform)
 ---
-## 📌 Project Overview
+## Project Overview
 
 QuizPlatform is a full-stack web application developed to support the creation, management, and completion of quizzes in an educational environment.  
 
@@ -29,7 +29,7 @@ The system enables teachers to design and manage quizzes, while students can tak
 
 ---
 
-## 🎯 Objectives
+## Objectives
 
 - Develop a web-based system for quiz management  
 - Implement role-based access for different types of users  
@@ -38,19 +38,19 @@ The system enables teachers to design and manage quizzes, while students can tak
 
 ---
 
-## 🚀 Features
+## Features
 
-### 📝 Quiz Management
+### Quiz Management
 - Creation of customizable quizzes with multiple question types  
 - Editing and organization of quiz content  
 - Reuse of previously created quizzes  
 
-### 🎯 Quiz Participation
+### Quiz Participation
 - Interactive quiz-taking interface  
 - Access to available quizzes  
 - Immediate feedback after submission  
 
-### 📊 Results and Analysis
+### Results and Analysis
 - Storage and tracking of quiz results  
 - Performance evaluation for each user  
 - Basic analytical insights into quiz outcomes  
@@ -63,7 +63,7 @@ The system enables teachers to design and manage quizzes, while students can tak
 
 ---
 
-## 🛠 Technologies Used
+## Technologies Used
 
 - **Framework:** ASP.NET Core MVC  
 - **Language:** C#  
@@ -73,7 +73,7 @@ The system enables teachers to design and manage quizzes, while students can tak
 
 ---
 
-## ⚙️ System Architecture
+## System Architecture
 
 The application follows a full-stack architecture using ASP.NET Core MVC, where both frontend and backend logic are integrated within a single framework.
 
@@ -85,7 +85,7 @@ This approach ensures environment consistency, easier deployment, and scalabilit
 
 ---
 
-## 🚀 Deployment
+## Deployment
 
 The application is deployed on an AWS virtual machine running Ubuntu.
 
@@ -95,7 +95,7 @@ The application is deployed on an AWS virtual machine running Ubuntu.
 
 ---
 
-## 👨‍💻 Team
+## Team
 
 This project was developed by a team of three:
 
@@ -105,7 +105,7 @@ This project was developed by a team of three:
 
 ---
 
-## 📌 Conclusion
+## Conclusion
 
 The project demonstrates the development of a full-stack web application with role-based functionality, database integration, and cloud deployment.  
 
